@@ -125,7 +125,8 @@ RCT_EXPORT_MODULE(Realm)
 - (NSDictionary *)constantsToExport {
 #if DEBUG
 #if TARGET_IPHONE_SIMULATOR
-    NSArray *hosts = @[@"localhost"];
+    // NSArray *hosts = @[@"localhost"];
+    NSArray *hosts = [self getIPAddresses];
 #else
     NSArray *hosts = [self getIPAddresses];
 #endif
@@ -250,7 +251,11 @@ RCT_REMAP_METHOD(emit, emitEvent:(NSString *)eventName withObject:(id)object) {
                                                                   message:@"Invalid RPC request"];
         }
 
-        [response setValue:@"http://localhost:8081" forAdditionalHeader:@"Access-Control-Allow-Origin"];
+        // [response setValue:@"http://localhost:8081" forAdditionalHeader:@"Access-Control-Allow-Origin"];
+        NSArray *hosts = [self getIPAddresses];
+        NSString * str = [hosts componentsJoinedByString:@""];
+        NSString * url = [NSString stringWithFormat:@"http://%@:8081", str];
+        [response setValue:url forAdditionalHeader:@"Access-Control-Allow-Origin"];
         return response;
     }];
 
